@@ -1,0 +1,23 @@
+name: Container
+
+on:
+  push:
+    paths:
+      - 'Dockerfile'
+  pull_request: { }
+
+jobs:
+  builder:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: "libp2p-relay-daemon:${{ github.sha }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Container Image
+        env:
+          DOCKER_BUILDKIT: '1'
+        run: docker build -t "${IMAGE_TAG}" .
+      - name: Check Container Image
+        run: docker run "${IMAGE_TAG}" --help
