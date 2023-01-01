@@ -6,6 +6,7 @@ metadata:
 build:
   local:
     push: false
+    useBuildkit: true
   artifacts:
     - image: libp2p-relay-daemon
       docker:
