@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: libp2p-relay-daemon
+spec:
+  template:
+    spec:
+      containers:
+        - name: libp2p-relay-daemon
+          args:
+            - -id
+            - /identity/identity.key
+            - -config
+            - /config/config.json
+          volumeMounts:
+            - name: identity
+              mountPath: /identity
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: identity
+          secret:
+            secretName: libp2p-replay-identity
+        - name: config
+          configMap:
+            name: libp2p-replay-config

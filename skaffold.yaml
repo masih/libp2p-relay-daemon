@@ -1,0 +1,51 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+
+metadata:
+  name: libp2p-relay
+build:
+  local:
+    push: false
+  artifacts:
+    - image: libp2p-relay-daemon
+      docker:
+        dockerfile: Dockerfile
+profiles:
+  - name: local
+    portForward:
+      - namespace: libp2p-relay
+        resourceType: deployment
+        resourceName: libp2p-relay-daemon
+        port: 6060
+      - namespace: libp2p-relay
+        resourceType: deployment
+        resourceName: libp2p-relay-daemon
+        port: 4001
+    manifests:
+      hooks:
+        before:
+          - host:
+              # Generate random libp2p identity.
+              # Note: Only MacOS and linux OS is supported. For windows, run the generate-identity
+              #       script manually.
+              os:
+                - darwin
+                - linux
+              command:
+                - sh
+                - -c
+                - 'cd scripts && go run generate-identity/main.go -out ../examples/stable-identity/identity.key'
+        after:
+          # Remove generated libp2p identity after render to avoid storing unencrypted private key.
+          # Note: Only MacOS and linux OS is supported. For windows, remove manually.
+          - host:
+              os:
+                - darwin
+                - linux
+              command:
+                - sh
+                - -c
+                - 'rm -f examples/stable-identity/identity.key && echo "Removed generated libp2p identity."'
+      kustomize:
+        paths:
+          - examples/stable-identity
