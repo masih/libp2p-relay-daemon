@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: libp2p-relay-daemon
+spec:
+  selector:
+    matchLabels:
+      app: libp2p-relay-daemon
+  template:
+    metadata:
+      labels:
+        app: libp2p-relay-daemon
+    spec:
+      containers:
+        - name: libp2p-relay-daemon
+          image: libp2p-relay-daemon
+          env:
+            - name: GOLOG_LOG_LEVEL
+              value: INFO
+            - name: GOLOG_LOG_FMT
+              value: json
+          ports:
+            - containerPort: 4001
+              name: daemon
+            - containerPort: 6060
+              name: debug
+          readinessProbe:
+            tcpSocket:
+              port: daemon
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+            timeoutSeconds: 5
+            periodSeconds: 10
