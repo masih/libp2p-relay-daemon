@@ -1,5 +1,7 @@
 # libp2p-relay-daemon
 
+[![Build](https://github.com/masih/libp2p-relay-daemon/actions/workflows/build.yml/badge.svg)](https://github.com/masih/libp2p-relay-daemon/actions/workflows/build.yml)
+
 This repository provides a Cloud Native ready to deploy libp2p relay daemon, including:
 
 * Containerised [`go-libp2p-relay-daemon`](https://github.com/libp2p/go-libp2p-relay-daemon)
